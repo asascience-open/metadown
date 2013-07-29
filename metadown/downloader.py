@@ -11,7 +11,11 @@ class XmlDownloader(object):
 
             if namer is not None:
                 # Custom naming function for saved file on disk
-                filename = namer(url, **kwargs)
+                try:
+                    filename = namer(url, **kwargs)
+                except:
+                    print "Renaming failed on %s - skipping" % url
+                    continue
             else:
                 # By default, get the local file from the remove name name
                 filename = os.path.basename(urlsplit(url).path)
@@ -22,10 +26,13 @@ class XmlDownloader(object):
 
             # Absolute path to save file
             filepath = os.path.join(download_path, filename)
-
             
             if modifier is not None:
-                data = modifier(url, **kwargs)
+                try:
+                    data = modifier(url, **kwargs)
+                except:
+                    print "Modifier failed on %s - skipping" % url
+                    continue
             else:
                 try:
                     data = requests.get(url).text
