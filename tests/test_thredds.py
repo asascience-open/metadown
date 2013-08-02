@@ -13,7 +13,7 @@ class ThreddsTest(unittest.TestCase):
 
     def test_thredds_custom_skips(self):
         # We only want the Agg datasets
-        selects = [".*SST-Agg"]
+        selects = [".*SST-Agg.*"]
         # Don't process the "files/" lists
         skips = ["files/"]
         isos = ThreddsCollector("http://tds.glos.us:8080/thredds/mtri/aoc.html", selects=selects, skips=skips).run()
@@ -29,7 +29,7 @@ class ThreddsTest(unittest.TestCase):
 
     def test_thredds_default_skips(self):
         # We only want the Agg and Latest
-        selects = [".*Nowcast-Agg", ".*Lastest-Forecast"]
+        selects = [".*Nowcast-Agg.*", ".*Lastest-Forecast.*"]
         isos = ThreddsCollector("http://tds.glos.us:8080/thredds/hecwfs/hecwfs.html", selects=selects).run()
         # 2 ISOs (Nowcast and latest Forecast)
         assert len(isos) == 2
