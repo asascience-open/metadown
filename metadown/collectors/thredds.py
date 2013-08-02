@@ -12,5 +12,5 @@ class ThreddsCollector(object):
 
     def run(self):
         c = Crawl(self.url, self.selects, self.skips)
-        urls = [s.get("url") for d in c.datasets for s in d.services if s.get("service").lower() == "iso"]
+        urls = ["%s?dataset=%s&catalog=%s" % (s.get("url"), d.id, d.catalog_url) for d in c.datasets for s in d.services if s.get("service").lower() == "iso"]
         return urls
