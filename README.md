@@ -21,32 +21,51 @@ pip install metadown
 
 ### THREDDS
 
-The ThreddsCollector can take two optional arguments. Both are strongly suggested so you don't crawl an
+The ThreddsCollector can take three optional arguments. Both are strongly suggested so you don't crawl an
 entire THREDDS server (unless that is what you want to do).
 
+* `debug` (bool) - Print what is happening to the console.  Useful for debugging what to put into `selects` and `skips`.
 * `selects` (list) - Select datasets based on their THREDDS ID. Python regex is supported.
-* `skips` (list) - Skip datasets based on their name and catalogRefs based on their xlink:title. By default, the crawler uses four regular expressions to skip lists of thousands upon thousands of individual files that are part of aggregations or FMRCs (they are below.)  Setting the `skip` parameter to anything other than a superset of the defaults below runs the risk of having some angry system admins after you.
+* `skips` (list) - Skip datasets based on their name and catalogRefs based on their xlink:title. By default, the crawler uses some common regular expressions to skip lists of thousands upon thousands of individual files that are part of aggregations or FMRCs (they are below.)  Setting the `skip` parameter to anything other than a superset of the defaults below runs the risk of having some angry system admins after you.
 
-  *  `.\*files/`
-  *  `.\*Individual Files.\*`
-  *  `.\*File_Access.\*`
-  *  `.\*Forecast Model Run.\*`
+    *  `.*files.*`
+    *  `.*Individual Files.*`
+    *  `.*File_Access.*`
+    *  `.*Forecast Model Run.*`
+    *  `.*Constant Forecast Offset.*`
+    *  `.*Constant Forecast Date.*`
     
+You can access the default `skip` list through the ThreddsCollector.SKIPS class variable
 ```python
-from metadown.collectors.thredds import ThreddsCollector
-
-selects = [".*SST-Agg"]
-tc = ThreddsCollector("http://tds.glos.us:8080/thredds/mtri/aoc.html", selects=selects)
-metadata_urls = tc.run()
-print metadata_urls
+> from metadown.collectors.thredds import ThreddsCollector
+> print ThreddsCollector.SKIPS
 [
- 'http://tds.glos.us:8080/thredds/iso/SST/LakeErieSST-Agg',
- 'http://tds.glos.us:8080/thredds/iso/SST/LakeHuronSST-Agg', 
- 'http://tds.glos.us:8080/thredds/iso/SST/LakeMichiganSST-Agg', 
- 'http://tds.glos.us:8080/thredds/iso/SST/LakeOntarioSST-Agg', 
- 'http://tds.glos.us:8080/thredds/iso/SST/LakeSuperiorSST-Agg'
+  '.*files.*',
+  '.*Individual Files.*',
+  '.*File_Access.*',
+  '.*Forecast Model Run.*',
+  '.*Constant Forecast Offset.*',
+  '.*Constant Forecast Date.*'
 ]
 ```
+
+If you need to remove or add a new `skip`, it is **strongly** encouraged you use the `SKIPS` class variable as a starting point!
+
+```python
+> from metadown.collectors.thredds import ThreddsCollector
+> skips = ThreddsCollector.SKIPS + [".*-Day-Aggregation"]
+> metadata_urls = ThreddsCollector("http://tds.maracoos.org/thredds/MODIS.xml", selects=[".*-Agg"], skips=skips).run()
+> print metadata_urls
+[
+  'http://tds.maracoos.org/thredds/iso/MODIS-Agg.nc?dataset=MODIS-Agg&catalog=http://tds.maracoos.org/thredds/MODIS.xml',
+  'http://tds.maracoos.org/thredds/iso/MODIS-2009-Agg.nc?dataset=MODIS-2009-Agg&catalog=http://tds.maracoos.org/thredds/MODIS.xml',
+  'http://tds.maracoos.org/thredds/iso/MODIS-2010-Agg.nc?dataset=MODIS-2010-Agg&catalog=http://tds.maracoos.org/thredds/MODIS.xml',
+  'http://tds.maracoos.org/thredds/iso/MODIS-2011-Agg.nc?dataset=MODIS-2011-Agg&catalog=http://tds.maracoos.org/thredds/MODIS.xml',
+  'http://tds.maracoos.org/thredds/iso/MODIS-2012-Agg.nc?dataset=MODIS-2012-Agg&catalog=http://tds.maracoos.org/thredds/MODIS.xml',
+  'http://tds.maracoos.org/thredds/iso/MODIS-2013-Agg.nc?dataset=MODIS-2013-Agg&catalog=http://tds.maracoos.org/thredds/MODIS.xml'
+]
+```
+
 
 ### GeoNetwork
 
