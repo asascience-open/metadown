@@ -12,7 +12,7 @@ from metadown.utils.etree import etree
 class GeoNetworkCollector(object):
     def __init__(self, base_url):
         self.data = base_url + '/srv/en/csv.search?'
-        self.download = base_url + '/srv/en/iso19139.xml?id='
+        self.download = base_url + '/srv/en/xml_iso19139?id='
 
     def utf_8_encoder(self, unicode_csv_data):
         for line in unicode_csv_data:
