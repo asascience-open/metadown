@@ -27,7 +27,7 @@ class GeoNetworkCollector(object):
             h.write(requests.get(self.data).text)
 
         with codecs.open(t, "rb", "utf-8") as f:
-            reader = csv.DictReader(self.utf_8_encoder(f), delimiter='\t')
+            reader = csv.DictReader(self.utf_8_encoder(f))
             for row in reader:
                 if row.get('schema') != 'iso19139':
                     continue
