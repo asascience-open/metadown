@@ -9,6 +9,22 @@ import requests
 
 from metadown.utils.etree import etree
 
+namespaces = {
+"gmx":"http://www.isotc211.org/2005/gmx",
+"gsr":"http://www.isotc211.org/2005/gsr",
+"gss":"http://www.isotc211.org/2005/gss",
+"gts":"http://www.isotc211.org/2005/gts",
+"xs":"http://www.w3.org/2001/XMLSchema",
+"gml":"http://www.opengis.net/gml/3.2",
+"xlink":"http://www.w3.org/1999/xlink",
+"xsi":"http://www.w3.org/2001/XMLSchema-instance",
+"gco":"http://www.isotc211.org/2005/gco",
+"gmd":"http://www.isotc211.org/2005/gmd",
+"gmi":"http://www.isotc211.org/2005/gmi",
+"srv":"http://www.isotc211.org/2005/srv",
+}
+
+
 class GeoNetworkCollector(object):
     def __init__(self, base_url):
         self.data = base_url + '/srv/en/csv.search?'
@@ -44,6 +60,23 @@ class GeoNetworkCollector(object):
         uid = urlsplit(url).query
         uid = uid[uid.index("=")+1:]
         return "GeoNetwork-" + uid + ".xml"
+
+    @staticmethod
+    def uuid_namer(url, **kwargs):
+        
+        root = etree.parse(url).getroot()
+            
+        x_res = root.xpath(
+            '/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString', 
+            namespaces=namespaces
+            )
+            
+        uuid = "GeoNetwork-" + x_res[0].text + ".xml"
+            
+        return uuid
+        
+        
+
 
     @staticmethod
     def modifier(url, **kwargs):
