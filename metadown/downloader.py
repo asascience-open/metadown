@@ -24,6 +24,9 @@ class XmlDownloader(object):
             if os.path.splitext(filename)[1] != ".xml":
                 filename = filename + ".xml"
 
+            if not os.path.exists(download_path):
+                os.makedirs(download_path)
+
             # Absolute path to save file
             filepath = os.path.join(download_path, filename)
             
