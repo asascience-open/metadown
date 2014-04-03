@@ -1,7 +1,47 @@
 import os
 from urlparse import urlsplit
-
+from metadown.utils.etree import etree
 import requests
+import datetime
+
+
+def set_date_stamp(fpath):
+    namespaces = {
+    "gmx":"http://www.isotc211.org/2005/gmx",
+    "gsr":"http://www.isotc211.org/2005/gsr",
+    "gss":"http://www.isotc211.org/2005/gss",
+    "gts":"http://www.isotc211.org/2005/gts",
+    "xs":"http://www.w3.org/2001/XMLSchema",
+    "gml":"http://www.opengis.net/gml/3.2",
+    "xlink":"http://www.w3.org/1999/xlink",
+    "xsi":"http://www.w3.org/2001/XMLSchema-instance",
+    "gco":"http://www.isotc211.org/2005/gco",
+    "gmd":"http://www.isotc211.org/2005/gmd",
+    "gmi":"http://www.isotc211.org/2005/gmi",
+    "srv":"http://www.isotc211.org/2005/srv",
+    }
+
+                
+    # Always modify date stamp!
+    root = etree.parse(fpath)
+    
+    x_res = root.xpath(
+    'gmd:dateStamp', 
+    namespaces=namespaces
+    )
+    
+    for dateStamp in x_res:
+        
+        # there should be only one - could be Date or dateTime - just delete it
+        for i in xrange(len(dateStamp)):
+            del dateStamp[i]
+        
+        dateTime = etree.SubElement(dateStamp, '{http://www.isotc211.org/2005/gco}DateTime')
+        
+        dateTime.text = datetime.datetime.now().isoformat()    
+
+    root.write(fpath)
+
 
 class XmlDownloader(object):
 
@@ -42,7 +82,11 @@ class XmlDownloader(object):
                 except requests.exceptions.RequestException:
                     print "Error downloading %s" % url
                     continue
-                
+
             # Need to use codecs.open for UTF-8 data
             with open(filepath, "w") as handle:
                 handle.write(data)
+                
+            # Always modify date stamp!            
+            set_date_stamp(filepath)
+
