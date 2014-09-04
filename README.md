@@ -84,7 +84,7 @@ print metadata_urls
 ```
 
 
-### Downloading resulting ISO files
+## Downloading resulting ISO files
 
 Once you have the metadata urls for the data you want, do whatever you want!
 If you would like to rename or modify the metadata files, there is a helper class called `XmlDownloader`
