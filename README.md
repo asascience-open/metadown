@@ -34,7 +34,7 @@ entire THREDDS server (unless that is what you want to do).
     *  `.*Forecast Model Run.*`
     *  `.*Constant Forecast Offset.*`
     *  `.*Constant Forecast Date.*`
-    
+
 You can access the default `skip` list through the ThreddsCollector.SKIPS class variable
 ```python
 > from metadown.collectors.thredds import ThreddsCollector
@@ -77,12 +77,45 @@ metadata_urls = gnc.run()
 print metadata_urls
 [
  ...
- 'http://data.glos.us/metadata/srv/en/iso19139.xml?id=39848', 
- 'http://data.glos.us/metadata/srv/en/iso19139.xml?id=39846', 
+ 'http://data.glos.us/metadata/srv/en/iso19139.xml?id=39848',
+ 'http://data.glos.us/metadata/srv/en/iso19139.xml?id=39846',
  'http://data.glos.us/metadata/srv/en/iso19139.xml?id=39845'
 ]
 ```
 
+
+### WaterQualityData.us
+
+The WaterQualityDataUs constructor accepts any parameters that the webservice
+supports.  Please see parameter table [here](http://waterqualitydata.us/webservices_documentation.jsp) for a list of options.
+
+
+```python
+from metadown.collectors.waterqualitydataus import WaterQualityDataUs
+
+bbox = (-78, 28, -70, 32)
+isos = WaterQualityDataUs(bBox=bbox).run()
+for iso in isos:
+    with open("your_save_path.xml", "w") as f:
+        f.write(iso)
+```
+
+You can also load the ISO into an XML object.  For more information on the ISO
+object, please see the [OWSLib](https://github.com/kwilcox/OWSLib/blob/master/owslib/iso.py) project.
+
+```python
+from metadown.collectors.waterqualitydataus import WaterQualityDataUs
+from owslib.iso import MD_Metadata
+
+bbox = (-78, 28, -70, 32)
+isos = WaterQualityDataUs(bBox=bbox).run()
+for iso in isos:
+    xml_obj  = MD_Metadata(etree.fromstring(str(iso)))
+```
+
+**Note:** The WaterQualityDataUs object does not return URLs to ISO files, it creates
+the ISO files manually from metadata avaialble through the webservice.  You will
+need to save the XML strings to a file yourself.
 
 ## Downloading resulting ISO files
 
@@ -94,7 +127,7 @@ XmlDownloader takes in three parameters:
 * `url_list` (required) - a list of URLs
 * `download_path` (required) - folder to download files to on your local machine
 * `namer` (optional) - a python function for renaming the metadata files before saving them to your local machine.  It should take in a single url and return a string filename for the url to be saved as.
-    
+
     Example `namer` function that renames GeoNetwork URLs
     ```python
     from urlparse import urlsplit
@@ -102,7 +135,7 @@ XmlDownloader takes in three parameters:
         uid = urlsplit(url).query
         uid = uid[uid.index("=")+1:]
         return "GeoNetwork-" + uid + ".xml"
-    ``` 
+    ```
 
 * `modifier` (optional) - a python function for full control over the metadata content.  It should take in a single url and return a `str` representation of ISO19115-2.
 

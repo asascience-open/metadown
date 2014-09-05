@@ -1,3 +1,7 @@
 requests
 lxml
 thredds_crawler
+python-dateutil
+pytz
+Jinja2
+OWSLib
