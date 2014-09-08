@@ -63,20 +63,17 @@ class GeoNetworkCollector(object):
 
     @staticmethod
     def uuid_namer(url, **kwargs):
-        
+
         root = etree.parse(url).getroot()
-            
+
         x_res = root.xpath(
-            '/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString', 
+            '/gmd:MD_Metadata/gmd:fileIdentifier/gco:CharacterString',
             namespaces=namespaces
             )
-            
-        uuid = "GeoNetwork-" + x_res[0].text + ".xml"
-            
-        return uuid
-        
-        
 
+        uuid = "GeoNetwork-" + x_res[0].text + ".xml"
+
+        return uuid
 
     @staticmethod
     def modifier(url, **kwargs):
@@ -93,4 +90,4 @@ class GeoNetworkCollector(object):
         [new_root.append(e) for e in old_root]
 
         return etree.tostring(new_root, encoding="UTF-8", pretty_print=True, xml_declaration=True)
-                
+
