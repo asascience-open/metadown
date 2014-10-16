@@ -1,7 +1,7 @@
 metadown
 ========
 
-A programatic collector/downloader for IOOS like 19115-2 metadata.
+Metadown is a programatic collector/downloader for IOOS like 19115-2 metadata.
 
 Services supported:
 
