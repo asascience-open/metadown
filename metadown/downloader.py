@@ -21,24 +21,21 @@ def set_date_stamp(fpath):
     "srv":"http://www.isotc211.org/2005/srv",
     }
 
-                
+
     # Always modify date stamp!
     root = etree.parse(fpath)
-    
+
     x_res = root.xpath(
-    'gmd:dateStamp', 
+    'gmd:dateStamp',
     namespaces=namespaces
     )
-    
+
     for dateStamp in x_res:
-        
-        # there should be only one - could be Date or dateTime - just delete it
-        for i in xrange(len(dateStamp)):
-            del dateStamp[i]
-        
-        dateTime = etree.SubElement(dateStamp, '{http://www.isotc211.org/2005/gco}DateTime')
-        
-        dateTime.text = datetime.datetime.now().isoformat()    
+
+        #change the text value instead of deleting
+        dateTime = dateStamp.find('gco:DateTime', namespaces=namespaces)
+        # set to an ISO formatted date
+        dateTime.text = datetime.datetime.now().isoformat()
 
     root.write(fpath)
 
@@ -59,7 +56,7 @@ class XmlDownloader(object):
             else:
                 # By default, get the local file from the remove name name
                 filename = os.path.basename(urlsplit(url).path)
-            
+
             # Always save with a .xml extension
             if os.path.splitext(filename)[1] != ".xml":
                 filename = filename + ".xml"
@@ -69,7 +66,7 @@ class XmlDownloader(object):
 
             # Absolute path to save file
             filepath = os.path.join(download_path, filename)
-            
+
             if modifier is not None:
                 try:
                     data = modifier(url, **kwargs)
@@ -86,7 +83,7 @@ class XmlDownloader(object):
             # Need to use codecs.open for UTF-8 data
             with open(filepath, "w") as handle:
                 handle.write(data)
-                
-            # Always modify date stamp!            
+
+            # Always modify date stamp!
             set_date_stamp(filepath)
 
