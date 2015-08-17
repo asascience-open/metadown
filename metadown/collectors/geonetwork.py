@@ -10,25 +10,27 @@ import requests
 from metadown.utils.etree import etree
 
 namespaces = {
-"gmx":"http://www.isotc211.org/2005/gmx",
-"gsr":"http://www.isotc211.org/2005/gsr",
-"gss":"http://www.isotc211.org/2005/gss",
-"gts":"http://www.isotc211.org/2005/gts",
-"xs":"http://www.w3.org/2001/XMLSchema",
-"gml":"http://www.opengis.net/gml/3.2",
-"xlink":"http://www.w3.org/1999/xlink",
-"xsi":"http://www.w3.org/2001/XMLSchema-instance",
-"gco":"http://www.isotc211.org/2005/gco",
-"gmd":"http://www.isotc211.org/2005/gmd",
-"gmi":"http://www.isotc211.org/2005/gmi",
-"srv":"http://www.isotc211.org/2005/srv",
+    "gmx": "http://www.isotc211.org/2005/gmx",
+    "gsr": "http://www.isotc211.org/2005/gsr",
+    "gss": "http://www.isotc211.org/2005/gss",
+    "gts": "http://www.isotc211.org/2005/gts",
+    "xs": "http://www.w3.org/2001/XMLSchema",
+    "gml": "http://www.opengis.net/gml/3.2",
+    "xlink": "http://www.w3.org/1999/xlink",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "gco": "http://www.isotc211.org/2005/gco",
+    "gmd": "http://www.isotc211.org/2005/gmd",
+    "gmi": "http://www.isotc211.org/2005/gmi",
+    "srv": "http://www.isotc211.org/2005/srv",
+    "geonet": "http://www.fao.org/geonetwork"
 }
 
 
 class GeoNetworkCollector(object):
     def __init__(self, base_url):
         self.data = base_url + '/srv/en/csv.search?'
-        self.download = base_url + '/srv/en/xml_iso19139?id='
+        # change to use ISO with extra GeoNetwork metadata
+        self.download = base_url + '/srv/en/xml.metadata.get?id='
 
     def utf_8_encoder(self, unicode_csv_data):
         for line in unicode_csv_data:
